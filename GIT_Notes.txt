@@ -1,0 +1,885 @@
+Types of version control system:
+	1.Localized version 
+	2.Centralized version 
+	3.Distributed version 
+
+Localized:
+	copy files into another directory with a timestamp
+
+Centralized version:
+	version history is maintained at the central repository
+	Users local directory does not maintain any history of versions
+	But the local directory reflects the master and if they the lower 
+	versions they need to connect to the central repository to fetch the reqd 
+	version.
+	By this means the user would not have source control when offline
+	And if the central repository is down 
+		-user cant use source control to move around the versions
+		-they cannot create branches or commit any code untill they are online
+		
+Decentralzed repository:
+	version history is maintained in each developer node.So at any point they 
+	can move around versions 
+	offline working is possible. ie. developer can develop any code and commit
+	to his local repository and later when online they can push to remote repo
+	Note:source control is available even when offline
+
+
+
+Types of version Control
+	-Localized version control
+		-Collaboration is not possible
+		-Single point of failure
+	-centralized version control
+		-Collaboration is possible
+		-Single point of failure ie. when the server is down/corrupted the files cant be rescued
+	-Distributed version control (GIT,Mercurial etc)
+	Note:
+		The local user dont checkout their own code but the entire repository
+		Which enables to see all the code made by team members
+		Thus if server is down.Complete repository is found in each local system
+	
+	
+	
+General History:
+	Git concept was developed by Linus Torvald for his open source Linux Kernel 
+	contribution
+	
+	Aimed at:
+		-Speed
+		-Simple design
+		-Strong support for non-linear development (thousands of parallel branches)
+		-Fully distributed
+		-Able to handle large projects like the Linux kernel efficiently (speed and data size)
+
+		
+Git basics:
+	Snapshots,Not differences
+		-git uses reference for the files to maintain changes
+	Nearly every operational is Local
+		-You hardly need the n/w
+		-You can keep developing 
+*** GIT states:
+	-Commited
+		-data is safely stored in your local database
+	-Modified
+		-changed the file but not committed it to database yet
+	-Staged
+		-Marked a modified file in its current version to go into your next commit snapshot
+		
+GIT Directory:
+	-Git directory
+	-Working directory
+	-Staging area
+	
+git config file:
+Git config file is present in three levels
+	-System level 	(All users in the system)
+	-Global level		(specfic to user)
+	-Project level	(specific to project)
+	
+$git config --list 
+lists down all the parameters inclulding the core. This cascades all the levels
+The lower levels override the higher levels.
+Duplicates can be present because the parameters are present in more than one 
+level.In that case it follows the CSS principle ie. lower one take precedence
+
+	set the user.name and user.email and other keys that is used when you are committing
+	set the http.proxy  
+	$ git config --global/system --get user.name/user.email
+	& git config --list 	//list all the  contents in the config file
+	
+git init : to create a git directory in the specified folder
+
+Working Directory:
+	has two types of files ie.
+		1.Tracked - present in the last snapshot.They can be unmodified/modified/staged
+		2.Untracked -Any files in your working directory that were not the recent snapshot 
+		and are not in the staging area
+		In otherowrds,untracked means git sees a file that wasn't present in the previous snapshot(commit)
+	Note:
+		git add <file name> will make the untracked file tracked
+		git add <file name> modified to staged
+		
+	
+		
+Note:
+New file which is untracked can be tracked using git add file/directory name
+if its a directory, the command adds all the files in that directory recursively
+			
+
+git add <filename>			
+	stage the file.Note: Only the staged files are committed.
+	If the staged file is modified before commiting the status shows the file in 
+	modified as well as staged 
+	Means the staged file contains the unmodified file which can be committed or
+	override by the staging the new modified file
+git status
+	1.which branch
+	2.Message				
+	3.Untracked files		-??
+	4.tracked files/staged	-A
+	5.Modified files		-M	
+
+How to ignore files:	
+
+/************************
+GIT stages
+*************************/
+	-Directory (Includes both tracked and Untracked files)
+	-Stage 	
+	-Git local repository 
+	-Git central repository
+	
+	
+
+/************************
+GIT Status
+*************************/
+Untracked Files
+	-Files in the directory which are not tracked by the git 
+	-Displays the file name
+Changes not staged for commit
+	-contains	
+		-Modified 	(directory vs staged)
+		-Deleted	(directory vs staged)
+		-Untracked
+	
+Changes to be committed
+	-Modified		(staged vs local git)
+	-Deleted		(staged vs local git)
+	-new file		(staged vs local git)
+
+Note:****
+	Even the blank space are identified as a change in git though the content is same
+
+/************************
+What we can do with GIT??
+*************************/
+	-use .gitignore file to make git to ignore the files in the directory for tracking
+			# no .a files
+			*.a
+
+			# but do track lib.a, even though you're ignoring .a files above
+			!lib.a
+
+			# only ignore the TODO file in the current directory, not subdir/TODO
+			/TODO
+
+			# ignore all files in the build/ directory
+			build/
+
+			# ignore doc/notes.txt, but not doc/server/arch.txt
+			doc/*.txt
+
+			# ignore all .pdf files in the doc/ directory
+			doc/**/*.pdf
+			
+			
+	-To remove a file from directory and in the git
+		delete the file in the directory
+		$git status	
+			changes not staged for commit
+				deleted:    project_1/DeleteFile.txt
+				->Git finds the difference in the director(Tracked) and the staed area
+				->We can either remove the same file in the staged area / restore the deleted file
+		$git status
+			changes to be commited
+				deleted:    project_1/DeleteFile.txt
+				-> After deleting the file in the staged area git finds a difference in staged and Git repos
+				but not between the directory and staged area. because we have deleted the file in both
+		Now we need to commit the modification to the git repo
+		
+	-$ git rm --cache file name	
+		Removes the file from the staged area thereby making a difference in git vs staged
+		also a difference in directory vs staged making it as Untracked file
+	
+	-When a file is renamed
+		
+	
+		git status says the file has been removed from directory and to remove from the git repository
+		git rm fileName removes
+
+
+
+/************************
+Git Basics
+*************************/	
+Checking the Status of Your Files
+	$ git status
+	
+Tracking New Files/Staging Modified Files
+	$ git add <filename>
+
+Ignoring Files
+	create a /gitignore file and type the commands
+			# no .a files
+			*.a
+
+			# but do track lib.a, even though you're ignoring .a files above
+			!lib.a
+
+			# only ignore the TODO file in the current directory, not subdir/TODO
+			/TODO
+
+			# ignore all files in the build/ directory
+			build/
+
+			# ignore doc/notes.txt, but not doc/server/arch.txt
+			doc/*.txt
+
+			# ignore all .pdf files in the doc/ directory
+			doc/**/*.pdf
+			
+			
+	
+Viewing Your Staged and Unstaged Changes	
+	To see what you've changed/modified but not yet staged
+		$ git diff 
+	To see the staged files	
+		$ git diff --staged
+		$ git diff --cached
+		
+Committing Your Changes
+	$ git commit
+	
+Skipping the Staging Area (not reqd)
+
+Removing files
+	$ git rm <filename> 	removes from stage area as well as from the working directory(Careful)
+	$ git rm --cached <filename>	removes only from the staged area and not from the directory making it as untracked
+	
+Moving Files
+	Rename the file in the working directory
+	Remove the old name file in the local repo $ git rm <old name file>
+	stage the renamed file $ git add <fileName>
+	
+	
+Get the commits:
+	$ git checkout --<file-name>	//retrieves the file 
+	$ git checkout <branch-name>	//Most used
+	$ git checkout <tag-name> #		//checkout based on tags
+	$ git checkout <commit-id>		
+		This checkout the particular commit object which is not pointed to any branch
+		This makes the detached head state.We can do more commits.
+		Infact when it proves worthy it can be added to a branch.Making the HEAD attached
+		
+		
+	
+/************************
+Git logs
+*************************/	
+How to get out off git log: type letter q and enter
+
+Viewing commit history
+
+	$ git log
+	says:
+		-commit SHA-1 checksum
+		-Author
+		-Date
+		-Commit message
+
+	To show the latest n=2 commits
+	$ git log -2 
+
+
+	To show detailed/abbreviated logs
+		$ git log --stat
+
+	To just display the commit number and commit message ***
+		$ git log --pretty=oneline  
+		$ git log --pretty=short
+		$git log --pretty=format:"%h - %an, %ar : %s"
+
+		Difference between Author and commiter
+		Author who wrote the code
+		commiter who commits the code
+
+		$ git log --pretty=format:"%h %s" --graph  
+
+	Limiting Output
+		$ git log --since=2.weeks
+		$ git log --until=2.weeks
+
+
+/************************
+Git Undoing things 
+*************************/
+Recommit:
+	$ git commit --amend
+
+	untracked --> stage --> commit amend to replace
+
+Unstaging a staged file:
+	$ git add * 	<stages all the files in that location>
+	Now we need to unstage a file in the staged area
+	$ git reset HEAD <filename>
+
+Unmodifying a Modified File
+	After a commiting a stable version.You have modified some changes.Now you realise 
+	that u want to revert back to the previous stable version then,
+	$ git checkout --<fileName> 
+	and stage the files?
+	
+	can we checkout an entire project and replace the working directory?
+	Yes using $ git checkout <branch-name>
+	Note: Use this command cautiously as this would replace/rewrite the working directory
+	Intead use branches and when a stable code is reached merge it to the commit
+
+	
+	Files/directories which are untracked will not be removed from the working directory
+	Those files can be removed through
+	$ git clean -f  //	to remove untracked files
+	$ git clean -d  // 	to remove untracked directories
+	# git clean -n 	// 	list all files(only files not directories) which would get removed
+	
+	Ref:https://koukia.ca/how-to-remove-local-untracked-files-from-the-current-git-branch-571c6ce9b6b1
+
+/************************
+Git Working with remotes
+*************************/
+Note:
+	There can be many remotes
+	Codes can be pulled and pushed to these repositories
+	Also the pulled code need not be the entire project,preferably a portion
+	Different remotes use different protocols
+	
+Managing remotes:	
+	How to add remote repositories
+	Remove remotes that are no longer valid
+	manage various remote branches and define them as being tracked or not
+
+
+
+	
+Showing your remotes:
+	To show the configured servers/ cloned servers 
+	$ git remote  //by default git gives 'origin'  as the name for the server
+	
+	$ git remote -v //remote name and the URL
+	
+Adding Remote Repositories:
+	$ git remote add <remoteName> <url with the corresponding protocol>
+	
+Fetching and Pulling from Your Remotes
+	$ git fetch <remote name configured> 
+	Note: fetches any new work that has been pushed to that server since last fetched
+	Also the fetch command only downloads to data to your local repo - it doesnt 
+	automatically merge it with any of your work or modify what you are currently working on
+	
+	$ git pull 
+	get data and merges to the current branch where the HEAD points to
+	
+	$git clone
+	Automatically gets the data from the remote master branch to the local master branch
+	
+Pushing to Your Remotes:
+	$ git push <Remote name> <local branch name>
+	Note:
+		This works only when	
+			-we have write access
+			-nobody has pushed in meantime
+		Else,this gets rejected
+	
+Inspecting a remote:	
+	$ git remote show <remote-name>
+	
+Removing and Renaming Remotes
+	$ git remote rename <oldRemote> <new remote name>
+	
+	
+	
+
+/************************
+Working with tags		
+************************/
+Tags for version releases
+Every tag has a commit object
+Lisiting Tags:
+	$ git tag //list tags in alphabetical order
+
+Search Tags:
+	$ git tag -l 'v1.8.5'
+	
+Creating Tags:
+Two types:
+	-Lightweight	//much like a branch that doesn’t change – it’s just a pointer to a specific commit
+	-Annotated		// are stored as full objects in the Git database (preferred)
+
+Annotated tags:
+	$ git tag -a <verison no.> -m "tag message"
+	$ git tag -a <verison no.>		//opens a message editor
+	
+	This gets tagged to the current commited code?
+About a tag:
+	$ git show <tag-name>
+	shows	
+		-who tagged
+		-date
+		-commit no.
+		-Auhtor
+		-Date
+		
+Tagging later:
+	$ git tag -a <version no> <short commit no.>
+	
+	Note: $ git log pretty=oneline //lists all the commits with their hashes
+
+Sharing tags:
+	By default,git doesnt transfer tags to remote servers.We need to explicitly share it
+	Similar to sharing remote branches
+	$ git push <remote-name> <tag-name>
+	
+	To push all tags (Preferred)
+	$ git push <remote-name> --tags	//This will transfer all of your tags to the remote server that are not already there.
+	
+Note:
+	Now, when someone else clones or pulls from your repository, they will get all your tags as well.
+	With this it will be easier to deploy the required version
+	
+Checking out Tags:
+	Need more understanding
+	
+	
+/************************
+Git Aliases		
+not reqd
+************************/
+
+/*************************************
+Git branching
+*************************************/
+
+Branches in nutshell:
+	commit object contains
+		-code files which are converted to blobs
+		-A tree which references the blobs
+		-A commit pointer which points to the tree
+	Next commit points to the late commit object
+	
+	By default,the latest commit is associated with a master branch
+	
+Creating a new Branch:
+	$ git branch <branch-name>	//creates a branch on the latest commited object
+Note:
+	A commit object can have more than one branches
+Note:HEAD	
+	HEAD is a pointer points to the branch which you are working on
+	Whatever the git commands used are applied to the branch pointed by the HEAD
+	$ git branch <> only creates a branch but not changes the head
+	
+Switching branches:
+	$ git checkout <branch-name>	//switches the HEAD to the corresponding branch-name
+	Note: this replaces the working directory with the contents available in that branch
+	Also when committed the HEAD moves forward with the latest commit
+Note:
+	The end child commits should be associated with any branch.If left it is garbage collected
+	
+	
+
+Branching and Merging:
+	Master branch has the stable commit
+	Now you need to enhance the app so you create a branch <enhance> - checkout - enhance - commit
+	Now another issue raised in the stable commit.Create branch <hot-fix> -checkout -work/fix - commit - test
+	When test is successful merge it as the stable commit
+	ie. Bring the master branch here at <hot-fix>
+	
+Note:
+	To merge a new commit <enhance> to the old stable <master>
+		-first checkout the branch you wish to merge into <master>
+			$ git checkout master
+		-Now run the merge command on the branch which you want to merge 
+			$ git merge enhance
+			
+	Note:
+		Now git sees the tree between the two branches if it lies on the same line it simply
+		changes/moves the pointer to the new enhanced commit naming it as master 
+		If not lies on the same line it creates a new commit object converging both branches
+		
+Delete the unwanted branches:
+	$ git branch -d <branch-name>
+	
+Basic Merge Conflicts:***
+	There will a difference between the stable and the enhanced commit
+	git does not merge untill this is resolved and throws a conflict errors
+	
+	Now you need to run status to find out the conflicts
+	Resolve the conflits
+	stage it $ git add
+	check status $ git status  that should say All conflicts fixed but you are still merging.
+	Now commit it
+	the commited is a new commited object computed by git
+
+Note:
+	to avoid merge conflicts .Merge minor changes
+	Merging with major changes like replacing the entire code will be hectic
+	
+
+How conflict arises?
+How git merges? does it compare files line by line or ?
+Brief description with explanation
+
+/*************************************
+Git on the server -Protocols
+*************************************/
+Local protocol:
+	Remote repository present in the same machine but another disk/shared locations
+	$ git clone /url   (from where)
+	$ git clone file:///   (not preferred)
+
+Http protocol:
+	Single url with authentication
+	User need not generate ssh keys
+	fast and efficient similar to ssh protocol
+	We can serve our repositories readonly to public over https which means we can encrypt
+	
+	tricky to setup
+	problems in authenticating
+
+SSH protocol:
+	common.Genereally SSH provides a secured channel over a unsecured network
+	Adopted in many servers
+	
+$ git clone ssh://url/project.git
+Pros:
+	Easy to setup
+	secure and efficient
+Cons:
+	not suitable for public repositories
+
+Git protocol:
+	Fastest data transfer
+	No authentication,Hence push/write access should be disabled
+	
+PART 2 :Getting git on the server
+
+/*************************************
+Distributed Git Contributing to a project
+*************************************/
+
+variables:
+1.contributor count
+2.workflow in used in the project
+3.commit access
+
+Commit Guidelines:
+1.check for whitespace errors before each comit <git diff --check>
+2.Each commit should focus on a Userstory
+3.Interactive staging? <git add --patch>
+4.Rewriting history?
+5.Commit messages format
+	short description about the commit may include the issue no./userstory working on
+	
+	Description as a paragraph. short and sweet with no grammar
+
+Private Small team:Workflow***
+
+
+
+
+
+
+
+/************************
+Important Git commands
+*************************/
+git add
+git add --patch
+
+
+git status
+git diff   				<modified but not staged>
+git diff --staged 		<displays the staged files>
+git diff --cached		<displays the staged files>
+git diff --check		<Displays whitespace errors> Should be checked before every commit
+git commit 
+
+
+
+git log
+git log -p
+git log --states
+git log --no-merges
+
+As discussed last week, can we have another call to finalise on what resources we 
+are going to work on for gami+
+
+
+/************************
+$ git gui 	//opens the gui version of the repository through which we can visualize 
+entire repository with all branches
+*************************/
+
+use :q to quit the log/ command process
+use esc :wq to come out of commmit editor
+
+
+
+/*******************************/
+Git diff between local / staged / commited
+
+
+/*******************************/
+Setting up Meld tool in git for diffing two objects
+
+$ git difftool -tool=meld
+
+set the meld in the path variable
+https://stackoverflow.com/questions/34119866/setting-up-and-using-meld-as-your-git-difftool-and-mergetool
+
+
+
+/**********************************
+Atlassian Git
+***********************************/
+Repo-to-repo collaboration:git push
+
+Unlike SVN, Git makes no distinction between the working copies and the central repository
+they're all full-fledged Git repositories.
+
+you push or pull commits from one repository to another.
+
+Bare vs. cloned repositories:
+
+Bare:
+my-project.git is a bare repository 
+created using
+$git init --bare
+$ssh <user>@<host> cd path/above/repo git init --bare my-project.git
+
+
+It does not have a working directory
+we cannot edit files and commit
+Purpose of this is for non-bare repositories to collaborate
+
+Typicall, Central repo will be a bare repo
+
+
+Cloned:
+1.Cloning a local or remote repository
+2.Cloning a bare repository
+3.Using shallow options to partially clone repositories
+4.Git URL syntax and supported protocols
+
+
+What is repo-to-repo interaction?
+Remote is a repo
+developer has a repo
+
+Interactions (push/pull) happens in terms of repo
+
+Git clone copies an entire repository not just the working code
+
+Git Stash:
+I have a commited code
+Now i modify my working directory
+Suddenly a request comes to switch the branch or revert to old commit
+Now instead of doing a wrapup commit i simply stash those changes and visit
+other branches 
+When i intermittent work is done i simply pop the stash to get the code ive written
+
+Creating a branch from stash:
+The stashed code conflicts with the current code
+Use 
+$git stash branch <branch-name>
+
+
+Undoing Changes:
+Git checkout
+	- checks out files
+	- checks out commits
+	- checks out branches
+	
+
+Git revert:
+undoes a commited snapshot
+undo the changes introduced by the commit and appends a new commit with resulting content
+
+3 and 5 are same
+
+Git reset:
+
+git reset <file>
+remove the specified file from the staging area but leave the working directory 
+unchanged
+
+git reset
+replaces the staged code to the recent commited code
+clean slate
+
+git reset --hard
+reset the staging area and the working directory
+
+git reset <commit>
+similar to git reset?
+
+git reset --hard <commit>
+changes the staging area and the working directory
+
+
+Note:
+Use git reset only on local repo. Not on centralized repo
+
+
+Rewriting history:
+
+
+
+/**
+Note:
+
+When a branch say master is pushed to a remote 
+git creates an extra branch on the same location saying <remotes/origin/master>
+<"remote push"/"remote name"/"which branch got pushed">
+
+This will be evident when u commit next time on the master
+Proved.
+
+
+Check whether the remote has the pushed code:
+Yes.Sandeep's code is pushed to git in the master branch
+
+Now:
+clone the remote repo to navins directory
+When remote repo is cloned, navin's repo has the master branch along with 
+it git creates another branch for <remotes/origin/master> for collaboration
+
+Step 3:
+Sandeep has made a change to his repo (two commits) and he pushes that commit to git 
+How the remote repo looks like
+remote repo simply reflects the sndeep's master branch
+and in sandeep's repo the remote/origin branch is moved to the latest commit push
+
+Step:4
+Navin trying to fetch the updated repo
+
+$ git fetch <remote-name>
+fetches all the branches in the remote-repo
+
+
+$ git fetch <remote-name> <branch-name>
+fetches only the requested branch
+
+Wonderful!!!
+all the updated commits in the remote-repo is added to the remote/origin branch
+Note:
+In navin's repo 2 branches were already there when cloning
+	1.master
+	2.remotes/origin
+Navin will use the master (local) branch when committing his local changes
+He will use the remotes/origin to know others/remotes work and merge them if 
+necessary
+
+Step: 5
+Navin merges his local repo with the remote-repo
+ie., merge your local master with the remote master
+
+$ git merge origin/master
+
+now navin's repo is merged with origin/master
+
+Step:6
+Navin creates a new commit and pushes to remote
+$ git add .
+$ git commit -m ""
+$ git push origin master
+
+Navin's commit is moved to the remote repo's master 
+
+
+Step:7 Sandeep fetches the updated repo and merge
+Note:
+This time sandeep has made some changes in his local repo
+his local changes are partially staged (some staged some not)
+
+$ git fetch origin
+Like normal operations
+local master branch has the uncommited modified code.
+fetched code is available at remote/origin/master
+
+
+Step: 8:
+what happens when sandeep commits his changes in the local 
+master and without merging with his remote/origin/master he tries to
+push to remote server/master
+
+lets trying
+
+Its simply says  "Everything upto date" 
+
+Which means the local repo's master and the remote repo's are 
+identical/synced 
+
+Which means
+git here when pushing tries to push origin/master to remotes-master
+not the local master
+
+Now try merging with origin/master
+
+
+Merge:
+<<<<<<< HEAD
+1.This line merges without a problem
+2.Merge  conflict would come here
+=======
+1.
+2.Navin commit and push to remote repo from navin repo
+>>>>>>> origin/master
+
+
+
+//conflict area
+<<<<<<<
+//current commit
+========
+//to merge commit 
+>>>>>>>
+
+
+We can either simply remove the code present in the current commit
+or we the to-merge commit
+else 
+do a combination of both and come to a solution
+
+
+8: 
+
+navin create a branch and push
+
+9:
+
+sandeep fetch 
+
+
+10:
+difference between fetch and pull
+
+11:
+rebase
+
+
+
+12:
+Pull request
+
+
+ 
+
+
+*/
+
+
+https://stackoverflow.com/questions/2459084/git-difftool-full-file-tree-compare-using-meld
+
+https://stackoverflow.com/questions/3491270/git-merge-apply-changes-to-code-that-moved-to-a-different-file
+
+
+
+
+
+
+/*************
+Findings
+***************/
+https://stackoverflow.com/questions/2763006/make-the-current-git-branch-a-master-branch
